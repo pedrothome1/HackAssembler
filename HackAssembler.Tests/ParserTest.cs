@@ -17,7 +17,7 @@ namespace HackAssembler.Tests
             {
                 using (var parser = new Parser(stream))
                 {
-                    Assert.False(parser.HasMoreCommands());
+                    Assert.False(parser.HasMoreCommands);
                 }
             }
         }
@@ -32,7 +32,7 @@ namespace HackAssembler.Tests
             {
                 using (var parser = new Parser(stream))
                 {
-                    Assert.True(parser.HasMoreCommands());
+                    Assert.True(parser.HasMoreCommands);
                 }
             }
         }
@@ -50,10 +50,10 @@ namespace HackAssembler.Tests
                 using (var parser = new Parser(stream))
                 {
                     parser.Advance();
-                    Assert.True(parser.HasMoreCommands());
+                    Assert.True(parser.HasMoreCommands);
 
                     parser.Advance();
-                    Assert.False(parser.HasMoreCommands());
+                    Assert.False(parser.HasMoreCommands);
                 }
             }
         }
@@ -72,10 +72,10 @@ namespace HackAssembler.Tests
                 using (var parser = new Parser(stream))
                 {
                     parser.Advance();
-                    Assert.True(parser.HasMoreCommands());
+                    Assert.True(parser.HasMoreCommands);
 
                     parser.Advance();
-                    Assert.False(parser.HasMoreCommands());
+                    Assert.False(parser.HasMoreCommands);
                 }
             }
         }
@@ -95,10 +95,31 @@ namespace HackAssembler.Tests
                 using (var parser = new Parser(stream))
                 {
                     parser.Advance();
-                    Assert.True(parser.HasMoreCommands());
+                    Assert.True(parser.HasMoreCommands);
 
                     parser.Advance();
-                    Assert.False(parser.HasMoreCommands());
+                    Assert.False(parser.HasMoreCommands);
+                }
+            }
+        }
+
+        [Fact]
+        public void Advance_DoesNothingWhenReachTheEnd()
+        {
+            var assembly =
+                "@20\n" +
+                "D=A";
+            var encoding = new UTF8Encoding();
+
+            using (var stream = new MemoryStream(encoding.GetBytes(assembly)))
+            {
+                using (var parser = new Parser(stream))
+                {
+                    parser.Advance();
+                    parser.Advance();
+                    parser.Advance();
+                    parser.Advance();
+                    parser.Advance();
                 }
             }
         }

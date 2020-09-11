@@ -22,20 +22,18 @@ namespace HackAssembler
         public int InstructionNumber { get; private set; }
         public bool IsInstructionA { get; private set; }
         public bool IsLabel => Label != string.Empty;
-
-
-        public bool HasMoreCommands()
-        {
-            return !_streamReader.EndOfStream;
-        }
+        public bool HasMoreCommands => !_streamReader.EndOfStream;
 
         public void Advance()
         {
+            if (!HasMoreCommands)
+                return;
+
             Address = Dest = Comp = Jump = Label = string.Empty;
 
             var instruction = _streamReader.ReadLine().RemoveSpaces();
 
-            while (!_streamReader.EndOfStream && (instruction == string.Empty || instruction.StartsWith("//")))
+            while (HasMoreCommands && (instruction == string.Empty || instruction.StartsWith("//")))
                 instruction = _streamReader.ReadLine().RemoveSpaces();
 
             IsInstructionA = instruction[0] == '@';
