@@ -38,6 +38,9 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
+# Visual Studio Code workspace folder
+.vscode
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
