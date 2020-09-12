@@ -5,8 +5,8 @@ namespace HackAssembler
 {
     public class Code
     {
-        const string AInstructionConstant = "0";
-        const string CInstructionConstants = "111";
+        public const string AInstructionConstant = "0";
+        public const string CInstructionConstants = "111";
 
         private static IDictionary<string, string> Computations = new Dictionary<string, string>()
         {

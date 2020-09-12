@@ -55,24 +55,23 @@ namespace HackAssembler
             _streamReader.Dispose();
         }
 
+        private static string RemoveSpacesAndComments(string instruction) =>
+            Regex.Replace(instruction, " +|//.*", "");
+
+        private static bool CheckLabel(string instruction) =>
+            Regex.IsMatch(instruction, @"\(.+\)");
+
+        private static string GetLabel(string instruction) =>
+            Regex.Replace(instruction, @"[()]", "");
+
         private string NextInstruction()
         {
-            var instruction = _streamReader.ReadLine().RemoveSpaces();
+            var instruction = RemoveSpacesAndComments(_streamReader.ReadLine());
 
-            while (HasMoreCommands && (instruction == string.Empty || instruction.StartsWith("//")))
-                instruction = _streamReader.ReadLine().RemoveSpaces();
+            while (HasMoreCommands && (instruction == string.Empty))
+                instruction = RemoveSpacesAndComments(_streamReader.ReadLine());
 
             return instruction;
-        }
-
-        private bool CheckLabel(string instruction)
-        {
-            return Regex.IsMatch(instruction, @"\(\w+\)");
-        }
-
-        private string GetLabel(string instruction)
-        {
-            return Regex.Replace(instruction, @"\W", "");
         }
 
         private void UpdateInstructionCFields(string instruction)

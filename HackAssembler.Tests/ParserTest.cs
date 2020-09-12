@@ -230,6 +230,22 @@ namespace HackAssembler.Tests
         }
 
         [Fact]
+        public void Label_ReturnsLabelThatHasAnyCharacter()
+        {
+            var assembly = "(screen.drawrectangle$if_false1)";
+            var encoding = new UTF8Encoding();
+
+            using (var stream = new MemoryStream(encoding.GetBytes(assembly)))
+            {
+                using (var parser = new Parser(stream))
+                {
+                    parser.Advance();
+                    Assert.Equal("screen.drawrectangle$if_false1", parser.Label);
+                }
+            }
+        }
+
+        [Fact]
         public void IsLabel_ReturnsTrueWhenEncountersLabel()
         {
             var assembly =
@@ -287,6 +303,29 @@ namespace HackAssembler.Tests
             var assembly =
                 "  @ R0  \n" +
                 " D = M + 1 ;  JGT ";
+            var encoding = new UTF8Encoding();
+
+            using (var stream = new MemoryStream(encoding.GetBytes(assembly)))
+            {
+                using (var parser = new Parser(stream))
+                {
+                    parser.Advance();
+                    Assert.Equal("R0", parser.Address);
+
+                    parser.Advance();
+                    Assert.Equal("D", parser.Dest);
+                    Assert.Equal("M+1", parser.Comp);
+                    Assert.Equal("JGT", parser.Jump);
+                }
+            }
+        }
+
+        [Fact]
+        public void SkipsComments()
+        {
+            var assembly =
+                "  @ R0  // First Register\n" +
+                " D = M + 1 ;  JGT // Calculation";
             var encoding = new UTF8Encoding();
 
             using (var stream = new MemoryStream(encoding.GetBytes(assembly)))
