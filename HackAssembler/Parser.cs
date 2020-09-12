@@ -29,13 +29,9 @@ namespace HackAssembler
             if (!HasMoreCommands)
                 return;
 
+            var instruction = NextInstruction();
+
             Address = Dest = Comp = Jump = Label = string.Empty;
-
-            var instruction = _streamReader.ReadLine().RemoveSpaces();
-
-            while (HasMoreCommands && (instruction == string.Empty || instruction.StartsWith("//")))
-                instruction = _streamReader.ReadLine().RemoveSpaces();
-
             IsInstructionA = instruction[0] == '@';
 
             if (IsInstructionA)
@@ -49,27 +45,7 @@ namespace HackAssembler
             }
             else
             {
-                var hasDestination = instruction.Contains("=");
-                var hasJump = instruction.Contains(";");
-                var fields = Regex.Split(instruction, "[=;]");
-
-                if (hasDestination && hasJump)
-                {
-                    Dest = fields[0];
-                    Comp = fields[1];
-                    Jump = fields[2];
-                }
-                else if (hasJump)
-                {
-                    Comp = fields[0];
-                    Jump = fields[1];
-                }
-                else if (hasDestination)
-                {
-                    Dest = fields[0];
-                    Comp = fields[1];
-                }
-
+                UpdateInstructionCFields(instruction);
                 ++InstructionNumber;
             }
         }
@@ -77,6 +53,16 @@ namespace HackAssembler
         public void Dispose()
         {
             _streamReader.Dispose();
+        }
+
+        private string NextInstruction()
+        {
+            var instruction = _streamReader.ReadLine().RemoveSpaces();
+
+            while (HasMoreCommands && (instruction == string.Empty || instruction.StartsWith("//")))
+                instruction = _streamReader.ReadLine().RemoveSpaces();
+
+            return instruction;
         }
 
         private bool CheckLabel(string instruction)
@@ -87,6 +73,30 @@ namespace HackAssembler
         private string GetLabel(string instruction)
         {
             return Regex.Replace(instruction, @"\W", "");
+        }
+
+        private void UpdateInstructionCFields(string instruction)
+        {
+            var hasDestination = instruction.Contains("=");
+            var hasJump = instruction.Contains(";");
+            var fields = Regex.Split(instruction, "[=;]");
+
+            if (hasDestination && hasJump)
+            {
+                Dest = fields[0];
+                Comp = fields[1];
+                Jump = fields[2];
+            }
+            else if (hasJump)
+            {
+                Comp = fields[0];
+                Jump = fields[1];
+            }
+            else if (hasDestination)
+            {
+                Dest = fields[0];
+                Comp = fields[1];
+            }
         }
     }
 }
